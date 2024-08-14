@@ -9,12 +9,43 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@fortawesome/fontawesome-svg-core": "^6.5.2",
+    "@fortawesome/free-solid-svg-icons": "^6.5.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
+    "@mui/icons-material": "^5.15.19",
+    "@mui/material": "^5.15.19",
+    "@mui/x-date-pickers": "^7.6.2",
+    "@nextui-org/navbar": "^2.0.33",
+    "@nextui-org/react": "^2.4.2",
+    "@nextui-org/system": "^2.2.2",
+    "@nextui-org/theme": "^2.2.6",
+    "@reduxjs/toolkit": "^2.2.5",
+    "ag-grid-community": "^32.0.1",
+    "ag-grid-react": "^32.0.1",
+    "dotenv": "^16.4.5",
+    "framer-motion": "^11.2.10",
+    "generate-react-cli": "^8.4.6",
+    "i": "^0.3.7",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.8.2",
+    "material-react-table": "^2.13.0",
+    "next": "14.2.3",
+    "next-themes": "^0.3.0",
+    "npm": "^10.8.1",
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.2.3"
+    "react-dropzone": "^14.2.3",
+    "react-redux": "^9.1.2",
+    "tabulator-tables": "^6.2.1",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
+    "autoprefixer": "^10.4.19",
     "eslint": "^8",
-    "eslint-config-next": "14.2.3"
+    "eslint-config-next": "14.2.3",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.4"
   }
 }
