@@ -1,12 +1,17 @@
+"use client"
 import {Card, CardHeader, CardBody, CardFooter ,Divider, Button} from "@nextui-org/react";
 import SnackbarComponent from '../../Components/SnackbarComponent';
 import CircularProgress from '@mui/material/CircularProgress';
 import Backdrop from '@mui/material/Backdrop';
 import { useGetDepartmentsQuery } from "@/app/Redux/slices/Department_Slice_API";
 import style from "./show.module.css";
+import { useRouter } from 'next/navigation';
 function ShowDepartments() {
     const { data: departmentsData, isError, isLoading, isFetching } = useGetDepartmentsQuery();
-    console.log(departmentsData)
+    const router = useRouter();
+    const navigateToDepartmentDetials = (id) => {
+        router.push(`department/${id}`);
+    };
     return ( 
         
         <div className="flex flex-row flex-wrap justify-center m-2">
@@ -35,7 +40,7 @@ function ShowDepartments() {
                     <Divider/>
                     <Divider/>
                     <CardFooter className="flex justify-center">
-                        <Button>
+                        <Button onClick={()=> navigateToDepartmentDetials(department.id)}>
                             more details 
                         </Button>
                     </CardFooter>

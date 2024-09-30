@@ -25,6 +25,9 @@ export const apiDepartmentSlice = createApi({
         query: (id) => `/departments/department/${id}/subjects`,
         
     }),
+    getDepartmentReport : builder.query({
+        query: () => `/departments/report`,
+    }),
     createDepartment: builder.mutation({
         query:(name)=>({
                 url:`/departments/department`,
@@ -85,6 +88,7 @@ export const {
     useGetDepartmentQuery,
     useGetDepartmentStudentsQuery,
     useGetDepartmentSubjectsQuery,
+    useGetDepartmentReportQuery,
     useCreateDepartmentMutation,
     useAddDepartmentStudentsMutation,
     useAddDepartmentSubjectMutation,

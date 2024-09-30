@@ -18,7 +18,7 @@ export default function RootLayout({ children }) {
       
 
       <body className={inter.className} suppressHydrationWarning={true}>
-      <ReduxProvider>
+      <ReduxProvider  >
         <ProvidersUIComponent themeProps={{ attribute: "class", defaultTheme: "dark" }}>
             <NavigationBarComponent></NavigationBarComponent>
             {children}

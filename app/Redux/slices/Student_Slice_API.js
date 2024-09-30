@@ -6,11 +6,14 @@ const API_URL = process.env.API_URL;
 
 export const apiStudentSlice = createApi({
   reducerPath:"apiStudent",
+  tagTypes: ['Students'],
+  keepUnusedDataFor: 0,
   baseQuery: fetchBaseQuery({ baseUrl: API_URL }),
   endpoints: (builder) => ({
     // Define your API endpoints here
     getStudents: builder.query({
       query: () => '/students',
+      providesTags: ['Students']
     }),
     getStudent: builder.query({
       query: (studentId) => `/students/student/${studentId}`,
@@ -25,8 +28,9 @@ export const apiStudentSlice = createApi({
       query:(student)=>({
         url:`/students/student`,
         method:'POST',
-        body:{student}
-      })
+        body:student
+      }),
+      invalidatesTags:['Students']
     }),
     ImportStudents:builder.mutation({
       query:(file)=>({
@@ -43,7 +47,8 @@ export const apiStudentSlice = createApi({
         url:`/students/student/${studentId}`,
         method:'DELETE',
         
-      })
+      }),
+      invalidatesTags:['Students']
     })
     
   }),

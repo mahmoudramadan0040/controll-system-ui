@@ -203,7 +203,7 @@ function SubjectTable() {
     }
     return (  
         <div>
-            <TableModifiedComponent information={information} ></TableModifiedComponent>
+            <TableModifiedComponent information={information}></TableModifiedComponent>
         </div>
     );
 }

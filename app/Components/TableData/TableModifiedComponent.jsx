@@ -42,8 +42,7 @@ function TableModifiedComponent({information}) {
     const handelClose =() =>{setModelState(false);}
     const handelOpen = (row) =>{setModelState(true);setRow(row);}
     const DeleteModel =()=>{
-        console.log(information.columns);
-        console.log(row);
+
         return (
             <div>
                 <Dialog

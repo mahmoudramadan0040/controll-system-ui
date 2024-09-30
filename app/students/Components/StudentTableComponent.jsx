@@ -194,7 +194,7 @@ function StudentTable() {
                 acc[error.path] = error.message;
                 return acc;
               }, {});
-              console.log(formattedErrors);
+
   
               dispatch(setValidationErrors(formattedErrors));
         }
@@ -217,7 +217,7 @@ function StudentTable() {
         HandelDelete:deleteStudent,
         HandelEdit:HandelEditStudent,
         Msg:{
-            EditMsg:"",
+            EditMsg:"Edit student information",
             CreateMsg:"create new Student",
             DeleteMsg:"Are you Sure Delete Student",
             Info:"Student Information"

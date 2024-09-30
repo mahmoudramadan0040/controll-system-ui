@@ -44,7 +44,7 @@ export default function NavigationBarComponent() {
           </Link>
         </NavbarItem>
         <NavbarItem>
-          <Link color="foreground" href="department">
+          <Link color="foreground" href="/department">
             Department
           </Link>
         </NavbarItem>

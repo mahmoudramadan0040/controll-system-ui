@@ -31,9 +31,9 @@ export const apiSubjectSlice = createApi({
         }),
         enrollStudentsInSubjects: builder.mutation({
             query:(student)=>({
-                url:`/subjects/subject`,
+                url:`/subjects/enroll`,
                 method:'POST',
-                body:{student}
+                body:{...student}
             })
         }),
         updateSubject:builder.mutation({

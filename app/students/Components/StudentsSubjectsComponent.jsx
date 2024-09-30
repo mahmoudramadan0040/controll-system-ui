@@ -86,10 +86,8 @@ function StudentsSubjects() {
         }
         const subjectIds = table.getSelectedRowModel().flatRows.map((subject)=>(subject.original.id));
         setSelectedSubjects(subjectIds);
-        console.log(subjectsSelected);
-        console.log(studentsSelected)
-        console.log(subjectsSelected)
-        console.log()
+        console.log(subjectIds)
+
         if(studentsSelected && subjectsSelected )
         {
             console.log("inside");
