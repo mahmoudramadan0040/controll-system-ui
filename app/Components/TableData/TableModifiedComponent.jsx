@@ -15,6 +15,7 @@ import { useState } from 'react';
 import {setValidationErrors} from "../../Redux/slices/SharedSlice";
 import { jsPDF } from 'jspdf'; //or use your library of choice here
 import autoTable from 'jspdf-autotable';
+
 // ----------------all props to use this component -------------------------------//
 // validation schema  [props =>  information.validationSchema ]                    |
 // table data [ props => infromation.data ]                                        |
@@ -229,6 +230,7 @@ function TableModifiedComponent({information}) {
     return ( 
         
         <div className="grid grid-cols-12 h-auto m-12">
+
             <div className="col-start-1 col-span-12 text-center">
                 <MaterialReactTable table={table}></MaterialReactTable>
                 {modelState ? <DeleteModel row={row}></DeleteModel>:""}

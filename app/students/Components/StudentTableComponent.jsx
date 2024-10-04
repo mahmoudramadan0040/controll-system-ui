@@ -1,6 +1,8 @@
 
+"use client"
 import { useSelector, useDispatch } from 'react-redux'
 import {  useMemo } from 'react';
+import React, { Suspense, lazy } from 'react';
 import {Chip} from "@nextui-org/react";
 import { boolean, object, string } from 'yup';
 import {setValidationErrors,clearValidationErrors} from "../../Redux/slices/SharedSlice";
@@ -10,13 +12,15 @@ import {
     useDeleteStudentMutation,
     useAddStudentMutation,
     useImportStudentsMutation } from '@/app/Redux/slices/Student_Slice_API';
-import TableModifiedComponent from "../../Components/TableData/TableModifiedComponent";
+// import TableModifiedComponent from "../../Components/TableData/TableModifiedComponent";
+import {Spinner} from "@nextui-org/react";
+const TableModifiedComponent = lazy(() => import('../../Components/TableData/TableModifiedComponent'));
 function StudentTable() { 
     const dispatch = useDispatch();
     const validationErrors = useSelector((state)=> state.shared.validationErrors);
 
     // get all student from api 
-    const {data:students,isLoading:isloadingStudents ,isFetching:isfetchingStudents,isError:isError} = useGetStudentsQuery(
+    const {data:students=[],isLoading:isloadingStudents ,isFetching:isfetchingStudents,isError:isError} = useGetStudentsQuery(
         undefined, {
             selectFromResult: (result) => {
               result.data = result.currentData ? 
@@ -55,7 +59,7 @@ function StudentTable() {
         studentStatus:string().oneOf(['First', 'Second', 'Third', 'Forth']).required(),
         studentContraint:string().oneOf(["Fresh", "RemainingOne", "RemainingTwo", "FirstChance", "SecondChance"]).required()
     })
-    
+  
     const TableData= useMemo(()=>students,[students.length]);
     const TableCoulmns = useMemo(()=>[
         {
@@ -224,9 +228,9 @@ function StudentTable() {
         }
     }
     return ( 
-        <div>
-            <TableModifiedComponent information={information} ></TableModifiedComponent>
-        </div>
+        <Suspense fallback={<Spinner color="default" size="lg" />}>
+            <TableModifiedComponent suppressHydrationWarning={true}  information={information} ></TableModifiedComponent>
+        </Suspense>
     );
 }
 

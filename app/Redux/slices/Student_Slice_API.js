@@ -1,19 +1,19 @@
 // apiSlice.js
 
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-
+import { TAG_TYPES } from './tags'; // Import the shared tags
 const API_URL = process.env.API_URL;
 
 export const apiStudentSlice = createApi({
   reducerPath:"apiStudent",
-  tagTypes: ['Students'],
+  tagTypes: [TAG_TYPES.STUDENTS],
   keepUnusedDataFor: 0,
   baseQuery: fetchBaseQuery({ baseUrl: API_URL }),
   endpoints: (builder) => ({
     // Define your API endpoints here
     getStudents: builder.query({
       query: () => '/students',
-      providesTags: ['Students']
+      providesTags: [TAG_TYPES.STUDENTS],
     }),
     getStudent: builder.query({
       query: (studentId) => `/students/student/${studentId}`,
@@ -30,7 +30,7 @@ export const apiStudentSlice = createApi({
         method:'POST',
         body:student
       }),
-      invalidatesTags:['Students']
+      invalidatesTags:[TAG_TYPES.STUDENTS]
     }),
     ImportStudents:builder.mutation({
       query:(file)=>({
@@ -48,7 +48,7 @@ export const apiStudentSlice = createApi({
         method:'DELETE',
         
       }),
-      invalidatesTags:['Students']
+      invalidatesTags:[TAG_TYPES.STUDENTS]
     })
     
   }),

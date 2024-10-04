@@ -4,6 +4,8 @@ import StudentsDepartment from "./Components/StudentsDepartmentComponent";
 import StudentsSubjects from "./Components/StudentsSubjectsComponent";
 // import ImportStudents from "./Components/ImportStudentsComponent";
 import ToolBarComponent from "../Components/ToolBarComponent";
+
+
 function Student() {
 
     const components = { 
@@ -20,7 +22,7 @@ function Student() {
     return ( 
     <div>
         {/* <StudentTable/> */}
-        <ToolBarComponent Components={components} Msg={msgs}></ToolBarComponent>
+        <ToolBarComponent Components={components} Msg={msgs}  ></ToolBarComponent>
     </div>
      );
 }

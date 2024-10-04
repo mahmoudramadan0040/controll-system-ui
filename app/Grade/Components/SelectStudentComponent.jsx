@@ -1,26 +1,35 @@
+
 "use client"
 import {
   MaterialReactTable,
   useMaterialReactTable,
   
 } from 'material-react-table';
-import {useMemo} from "react";
-import {Chip} from "@nextui-org/react";
 import TableIcons from "../../Components/TableData/TableIconsComponent";
-import { useGetStudentsQuery } from '@/app/Redux/slices/Student_Slice_API';
-import { useGetDepartmentsQuery,useAddDepartmentStudentsMutation,useDeleteDepartmentStudentsMutation  } from '@/app/Redux/slices/Department_Slice_API';
-import {Box,Button} from "@mui/material"
-import { useState } from 'react';
-import {Select, SelectItem} from "@nextui-org/react";
+import {useMemo,useState} from "react";
 import SnackbarComponent from '@/app/Components/SnackbarComponent';
-function StudentsDepartment() {
-    
+import {Select, SelectItem,Chip} from "@nextui-org/react";
+import {Box,Button} from "@mui/material"
+import { useGetDepartmentsQuery,useGetDepartmentStudentsQuery } from '@/app/Redux/slices/Department_Slice_API';
+import { useDispatch } from 'react-redux'
+import {setSelectedStudents,ChangeGradeSteps} from "../../Redux/slices/SharedSlice";
+function SelectStudent() {
+    const dispatch = useDispatch();
     const [selectedDepartment,setDepartment]=useState(null);
     const [selectDepartmentErr , setSelectDepartmentErr] = useState(false);
     const [selectStudentErr , setSelectStudentErr] = useState(false);
-    // get all student from api 
-    const {data:students,isLoading:isloadingStudents ,refetch ,isFetching:isfetchingStudents,isError:isError} = useGetStudentsQuery(
-        undefined, {
+
+    const { data: departments, isLoading:isLoadingDepartment, isFetching:isFechingDepartment, isError:IsErrorDepartment  } = useGetDepartmentsQuery(undefined, {
+        selectFromResult: (result) => {
+          result.data = result.currentData ? result.data.map(({ id, name }) => ({ id, name })) : []
+          return result;
+        },
+    });
+
+    
+    const {data:students,isLoading:isloadingStudents ,isFetching:isfetchingStudents,isError:isErrorStudents} = useGetDepartmentStudentsQuery(
+        selectedDepartment, {
+            skip: !selectedDepartment,
             selectFromResult: (result) => {
               result.data = result.currentData ? 
               result.data.map((
@@ -41,14 +50,8 @@ function StudentsDepartment() {
             },
           }
     );
-    const { data: departments, isLoading:isLoadingDepartment, isFetching:isFechingDepartment, isError:IsErrorDepartment  } = useGetDepartmentsQuery(undefined, {
-        selectFromResult: (result) => {
-          result.data = result.currentData ? result.data.map(({ id, name }) => ({ id, name })) : []
-          return result;
-        },
-    });
-    const [addDepartmentStudents,{isLoading:isLoadingDepartmentStudents , isError:isErrorDepartmentsStudents}] =useAddDepartmentStudentsMutation()
-    const [ deleteDepartmentStudents,{isLoading:isLoadingDeleteDepartmentStudents , isError:isErrorDeleteDepartmentsStudents} ] =useDeleteDepartmentStudentsMutation();
+
+
     
     const displayDepartmentName = (departmentId) =>{
         if(departmentId){
@@ -60,9 +63,7 @@ function StudentsDepartment() {
             return null;
         }
     }
-    
-    
-    const TableData= useMemo(()=>students,[students.length,isfetchingStudents]);
+    const TableData= useMemo(()=>students,[isfetchingStudents]);
 
     const TableCoulmns = useMemo(()=>[
         
@@ -125,12 +126,11 @@ function StudentsDepartment() {
             size: 80,
         },
     ]);
-    // const [age, setAge] = React.useState('');
     const handleChange = (event) => {
         setDepartment(event.target.value);
     };
 
-    const HandelAddStudentsToDepartment =(table) =>{
+    const HandelSelectStudentsFromDepartment =(table) =>{
         setSelectStudentErr(false);
         setSelectDepartmentErr(false);
      
@@ -145,31 +145,13 @@ function StudentsDepartment() {
             setSelectDepartmentErr(true);
             return;
         } 
-        const studentIds = table.getSelectedRowModel().flatRows.map((student)=>(student.original.id));
-        
-        // add students to selected department 
-        const departmentId = selectedDepartment;
-        console.log(departmentId)
-        addDepartmentStudents({departmentId,studentIds})
-        refetch()
+        const SelectedStudents = table.getSelectedRowModel().flatRows;
+        console.log(SelectedStudents)
+        dispatch(setSelectedStudents(SelectedStudents.original));
+        dispatch(ChangeGradeSteps(1));      
     }
 
-    const HandelRemoveStudentsFromDepartment =(table)=>{
-        setSelectStudentErr(false);
-        setSelectDepartmentErr(false);
-        if(!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()){
-            setSelectStudentErr(true);
-            return;
-        }
-        if(selectedDepartment==null){
-            setSelectDepartmentErr(true);
-            return;
-        } 
-        const departmentId = selectedDepartment;
-        const studentIds = table.getSelectedRowModel().flatRows.map((student)=>(student.original.id));
-        deleteDepartmentStudents({departmentId,studentIds})
-        refetch();
-    }
+    
     const table = useMaterialReactTable({
         columns:TableCoulmns,
         data:TableData,
@@ -190,7 +172,7 @@ function StudentsDepartment() {
         muiBottomToolbarProps:{sx: {backgroundColor:"#2F2F2F",color:"#fff",},},
         muiTablePaperProps:{sx: {border:"solid #1A2130 8px"},},
 
-        renderTopToolbarCustomActions: ({ table }) => (
+        renderTopToolbarCustomActions: ({ table  }) => (
         <Box
             sx={{
             display: 'flex',
@@ -199,12 +181,10 @@ function StudentsDepartment() {
             flexWrap: 'wrap',
             }}
         >
-            <Button  variant="contained" className="h-10" onClick={()=>HandelAddStudentsToDepartment(table)} disabled={ !table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected() || selectedDepartment==null } >
-                Subscribe Department
+            <Button  variant="contained" className="h-10" onClick={()=>HandelSelectStudentsFromDepartment(table)} disabled={ !table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected() || selectedDepartment==null } >
+                Next Step
             </Button>
-            <Button variant="contained"  color="error" className="h-10" onClick={()=>HandelRemoveStudentsFromDepartment(table)}  disabled={ !table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected() || selectedDepartment==null} >
-                UnSubscribe Department
-            </Button>
+            
             
             <Select radius="sm" label="Departments" onChange={handleChange} isDisabled={isLoadingDepartment && isFechingDepartment && IsErrorDepartment} labelPlacement="outside" placeholder="Select a Department " className="max-w-xs">
             
@@ -222,31 +202,28 @@ function StudentsDepartment() {
         ),
         state: {
             isLoading: isloadingStudents,
-            showAlertBanner: isError,
+            showAlertBanner: isErrorStudents,
             showProgressBars: isfetchingStudents,
             density:"compact"
         },
    
 
     });
-    
-   
-    return (       
+
+
+
+
+    return ( 
         <div className="grid grid-cols-12 h-auto m-12">
             <div className="col-start-1 col-span-12 text-center">
                 <MaterialReactTable table={table}></MaterialReactTable>
                 {selectDepartmentErr ? <SnackbarComponent vertical="top" horizontal="left" type="error"  msg="Please Select Department ! "></SnackbarComponent>:""}
                 {selectStudentErr ? <SnackbarComponent vertical="top" horizontal="left" type="error"  msg="Please Select Students ! "></SnackbarComponent>:""}
-                {!isLoadingDepartmentStudents && !isErrorDepartmentsStudents ? <SnackbarComponent vertical="top" horizontal="left" type="success"  msg="Students Subscribe Department Successfully !"></SnackbarComponent>:"" }
-                {!isLoadingDeleteDepartmentStudents && !isErrorDeleteDepartmentsStudents ? <SnackbarComponent vertical="top" horizontal="left" type="success"  msg="Students Un Subscribe Department Successfully !"></SnackbarComponent>:""}
+                {/* {!isLoadingDepartmentStudents && !isErrorDepartmentsStudents ? <SnackbarComponent vertical="top" horizontal="left" type="success"  msg="Students Subscribe Department Successfully !"></SnackbarComponent>:"" } */}
+                {/* {!isLoadingDeleteDepartmentStudents && !isErrorDeleteDepartmentsStudents ? <SnackbarComponent vertical="top" horizontal="left" type="success"  msg="Students Un Subscribe Department Successfully !"></SnackbarComponent>:""} */}
             </div>
         </div>
-    );
+     );
 }
 
-
-
-
-
-
-export default StudentsDepartment;
+export default SelectStudent;

@@ -3,6 +3,9 @@ import React from "react";
 import {Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle, NavbarMenu, NavbarMenuItem} from "@nextui-org/navbar";
 import {Link} from "@nextui-org/link";
 import {Button} from "@nextui-org/button"
+
+ 
+
 export default function NavigationBarComponent() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
@@ -20,6 +23,7 @@ export default function NavigationBarComponent() {
   ];
 
   return (
+    
     <Navbar isBordered onMenuOpenChange={setIsMenuOpen}>
       <NavbarContent>
         <NavbarMenuToggle
@@ -35,17 +39,22 @@ export default function NavigationBarComponent() {
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
         <NavbarItem>
           <Link color="foreground" href="/students">
-            Students
+            Manage Students
           </Link>
         </NavbarItem>
         <NavbarItem >
           <Link color="foreground" href="/subjects" aria-current="page">
-            Subjects
+           Manage Subjects
           </Link>
         </NavbarItem>
         <NavbarItem>
           <Link color="foreground" href="/department">
-            Department
+            Manage Department
+          </Link>
+        </NavbarItem>
+        <NavbarItem>
+          <Link color="foreground" href="/grade">
+            Manage Grades
           </Link>
         </NavbarItem>
       </NavbarContent>

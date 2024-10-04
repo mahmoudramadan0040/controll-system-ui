@@ -7,48 +7,35 @@ import {
 import {useMemo} from "react";
 import {Chip} from "@nextui-org/react";
 import TableIcons from "../../Components/TableData/TableIconsComponent";
-import { useGetStudentsQuery } from '@/app/Redux/slices/Student_Slice_API';
-import { useGetDepartmentsQuery,useAddDepartmentStudentsMutation,useDeleteDepartmentStudentsMutation  } from '@/app/Redux/slices/Department_Slice_API';
+import { useGetSubjectsQuery } from '@/app/Redux/slices/Subject_Slice_ApI';
+import { useGetDepartmentsQuery,useDeleteDepartmentSubjectMutation ,useAddDepartmentSubjectMutation } from '@/app/Redux/slices/Department_Slice_API';
 import {Box,Button} from "@mui/material"
 import { useState } from 'react';
 import {Select, SelectItem} from "@nextui-org/react";
 import SnackbarComponent from '@/app/Components/SnackbarComponent';
-function StudentsDepartment() {
+function SubjectDepartment() {
     
     const [selectedDepartment,setDepartment]=useState(null);
     const [selectDepartmentErr , setSelectDepartmentErr] = useState(false);
-    const [selectStudentErr , setSelectStudentErr] = useState(false);
-    // get all student from api 
-    const {data:students,isLoading:isloadingStudents ,refetch ,isFetching:isfetchingStudents,isError:isError} = useGetStudentsQuery(
+    const [selectSubjecttErr , setSelectSubjectErr] = useState(false);
+    // get all Subjects from api 
+    const {data:Subject,isLoading:isloadingSubjects ,isFetching:isfetchingSubjects,isError:isErrorSubjects} = useGetSubjectsQuery(
         undefined, {
             selectFromResult: (result) => {
-              result.data = result.currentData ? 
-              result.data.map((
-                { 
-                id,
-                student_id,
-                student_setId,
-                firstname,
-                lastname,
-                fullname,
-                phone,
-                studentStatus,
-                graduated,
-                studentContraint ,
-                departmentId
-                }) => ({ id,student_id,student_setId, firstname,lastname,fullname,phone,studentStatus,graduated,studentContraint,departmentId })) : []
-              return result;
+                result.data = result.currentData ? result.data.map(({ id, name, subject_Code,creditHours,isGeneralSubject,maxScore,maxSemesterScore }) => ({ id, name, subject_Code,creditHours,isGeneralSubject,maxScore,maxSemesterScore })) : []
+                return result;
             },
           }
     );
+    // get all Depatment from api 
     const { data: departments, isLoading:isLoadingDepartment, isFetching:isFechingDepartment, isError:IsErrorDepartment  } = useGetDepartmentsQuery(undefined, {
         selectFromResult: (result) => {
           result.data = result.currentData ? result.data.map(({ id, name }) => ({ id, name })) : []
           return result;
         },
     });
-    const [addDepartmentStudents,{isLoading:isLoadingDepartmentStudents , isError:isErrorDepartmentsStudents}] =useAddDepartmentStudentsMutation()
-    const [ deleteDepartmentStudents,{isLoading:isLoadingDeleteDepartmentStudents , isError:isErrorDeleteDepartmentsStudents} ] =useDeleteDepartmentStudentsMutation();
+    const [addSubjectsToDepartment,{isLoading:isLoadingDepartmentSubject, isError:isErrorDepartmentsSubject}] =useAddDepartmentSubjectMutation()
+    const [ deleteSubjectFromDepartment,{isLoading:isLoadingDeleteDepartmentSubject , isError:isErrorDeleteDepartmentSubject} ] =useDeleteDepartmentSubjectMutation();
     
     const displayDepartmentName = (departmentId) =>{
         if(departmentId){
@@ -62,103 +49,76 @@ function StudentsDepartment() {
     }
     
     
-    const TableData= useMemo(()=>students,[students.length,isfetchingStudents]);
+    const TableData= useMemo(()=>Subject,[Subject.length]);
 
     const TableCoulmns = useMemo(()=>[
-        
-        {
-            accessorKey:'student_id',
-            header:"Student ID",
-        },
-        {
-            accessorKey:'student_setId',
-            header:"Student Set ID",
-        },
-        {
-            accessorKey:'fullname',
-            header:"Full Name",
-        },
-        {
-            accessorKey:"departmentId",
-            header:"Department",
-            Cell:({cell})=>(
-                <Chip color={cell?.getValue() ? "primary":"danger" } variant="shadow">{cell?.getValue()  ? displayDepartmentName(cell?.getValue()):"Not Define"}</Chip>
-            ),
-            filterSelectOptions:departments.map((department)=>({"label":department?.name,"value":department?.id})),
-            filterVariant: 'select',
-        },
-        {
-            accessorKey:'firstname',
-            header:"First Name",
-        },
-        {
-            accessorKey:'lastname',
-            header:"Last Name",
-            
-        },
-        {
-            accessorKey:"phone",
-            header:"Phone Number",
-            
-        },
-        {
-            accessorKey:"studentStatus",
-            header:"Status",
-            
-        },
-        {
-            accessorKey:"graduated",
-            header:"Graduated",
-            Cell:({cell})=>(
-                <Chip color={cell.getValue() ? "primary":"success" } variant="shadow"   >{cell.getValue()? "False":"True"}</Chip>
-            ),
-        },
-        {
-            accessorKey:"studentContraint",
-            header:"Constraint",
-        },
-        
         {
             accessorKey: 'id',
             header: 'Id',
             enableEditing: false,
             size: 80,
         },
+        {
+            accessorKey:'name',
+            header:"Name",
+        },
+        {
+            accessorKey:'subject_Code',
+            header:"Subject Code",
+        },
+        {
+            accessorKey:"creditHours",
+            header:"Credit Hours",
+        },
+        {
+            accessorKey:"isGeneralSubject",
+            header:"General Subject",
+            Cell:({cell})=>(
+                <Chip color={cell.getValue() ? "primary":"success" } variant="shadow"   >{cell.getValue()? "General":"specialty"}</Chip>
+            ),
+        },
+        {
+            accessorKey:"maxScore",
+            header:"Max Score ",
+        },
+        {
+            accessorKey:"maxSemesterScore",
+            header:"Max Semester Score",
+        }
     ]);
     // const [age, setAge] = React.useState('');
     const handleChange = (event) => {
         setDepartment(event.target.value);
     };
 
-    const HandelAddStudentsToDepartment =(table) =>{
-        setSelectStudentErr(false);
+    const HandelAddSubjectsToDepartment =(table) =>{
+        setSelectSubjectErr(false);
         setSelectDepartmentErr(false);
      
         console.log(table.getSelectedRowModel().flatRows);
         // const selectedRows = table.getSelectedRowModel().flatRows;
         if(!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()){
-            setSelectStudentErr(true);
-            
+            setSelectSubjectErr(true);
             return;
         }
         if(selectedDepartment==null){
             setSelectDepartmentErr(true);
             return;
         } 
-        const studentIds = table.getSelectedRowModel().flatRows.map((student)=>(student.original.id));
+
+        const subjectIds = table.getSelectedRowModel().flatRows.map((subject)=>(subject.original.id));
         
         // add students to selected department 
         const departmentId = selectedDepartment;
-        console.log(departmentId)
-        addDepartmentStudents({departmentId,studentIds})
-        refetch()
+        addSubjectsToDepartment({departmentId,subjectIds})
+        
     }
 
-    const HandelRemoveStudentsFromDepartment =(table)=>{
-        setSelectStudentErr(false);
+    const HandelRemoveSubjectsFromDepartment =(table)=>{
+        setSelectSubjectErr(false);
         setSelectDepartmentErr(false);
         if(!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()){
-            setSelectStudentErr(true);
+            setSelectSubjectErr(true);
             return;
         }
         if(selectedDepartment==null){
@@ -166,9 +126,9 @@ function StudentsDepartment() {
             return;
         } 
         const departmentId = selectedDepartment;
-        const studentIds = table.getSelectedRowModel().flatRows.map((student)=>(student.original.id));
-        deleteDepartmentStudents({departmentId,studentIds})
-        refetch();
+        const subjectId = table.getSelectedRowModel().flatRows.map((subject)=>(subject.original.id));
+        deleteSubjectFromDepartment({departmentId,subjectId})
+
     }
     const table = useMaterialReactTable({
         columns:TableCoulmns,
@@ -176,7 +136,7 @@ function StudentsDepartment() {
         icons:TableIcons(),
         enableEditing: false,
         enableRowSelection: true,
-        muiToolbarAlertBannerProps: isloadingStudents
+        muiToolbarAlertBannerProps: isloadingSubjects
         ? {color: 'error',children: 'Error loading data',}: undefined,
         muiTableContainerProps: {sx: { minHeight: '500px',backgroundColor:"#2F2F2F",color:"#fff",},},
         // body 
@@ -190,7 +150,7 @@ function StudentsDepartment() {
         muiBottomToolbarProps:{sx: {backgroundColor:"#2F2F2F",color:"#fff",},},
         muiTablePaperProps:{sx: {border:"solid #1A2130 8px"},},
 
-        renderTopToolbarCustomActions: ({ table }) => (
+        renderTopToolbarCustomActions: ({ table  }) => (
         <Box
             sx={{
             display: 'flex',
@@ -199,10 +159,10 @@ function StudentsDepartment() {
             flexWrap: 'wrap',
             }}
         >
-            <Button  variant="contained" className="h-10" onClick={()=>HandelAddStudentsToDepartment(table)} disabled={ !table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected() || selectedDepartment==null } >
+            <Button  variant="contained" className="h-10" onClick={()=>HandelAddSubjectsToDepartment(table)} disabled={ !table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected() || selectedDepartment==null } >
                 Subscribe Department
             </Button>
-            <Button variant="contained"  color="error" className="h-10" onClick={()=>HandelRemoveStudentsFromDepartment(table)}  disabled={ !table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected() || selectedDepartment==null} >
+            <Button variant="contained"  color="error" className="h-10" onClick={()=>HandelRemoveSubjectsFromDepartment(table)}  disabled={ !table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected() || selectedDepartment==null} >
                 UnSubscribe Department
             </Button>
             
@@ -221,9 +181,9 @@ function StudentsDepartment() {
         </Box>
         ),
         state: {
-            isLoading: isloadingStudents,
-            showAlertBanner: isError,
-            showProgressBars: isfetchingStudents,
+            isLoading: isloadingSubjects,
+            showAlertBanner: isErrorSubjects,
+            showProgressBars: isfetchingSubjects,
             density:"compact"
         },
    
@@ -236,9 +196,9 @@ function StudentsDepartment() {
             <div className="col-start-1 col-span-12 text-center">
                 <MaterialReactTable table={table}></MaterialReactTable>
                 {selectDepartmentErr ? <SnackbarComponent vertical="top" horizontal="left" type="error"  msg="Please Select Department ! "></SnackbarComponent>:""}
-                {selectStudentErr ? <SnackbarComponent vertical="top" horizontal="left" type="error"  msg="Please Select Students ! "></SnackbarComponent>:""}
-                {!isLoadingDepartmentStudents && !isErrorDepartmentsStudents ? <SnackbarComponent vertical="top" horizontal="left" type="success"  msg="Students Subscribe Department Successfully !"></SnackbarComponent>:"" }
-                {!isLoadingDeleteDepartmentStudents && !isErrorDeleteDepartmentsStudents ? <SnackbarComponent vertical="top" horizontal="left" type="success"  msg="Students Un Subscribe Department Successfully !"></SnackbarComponent>:""}
+                {selectSubjecttErr ? <SnackbarComponent vertical="top" horizontal="left" type="error"  msg="Please Select Subject ! "></SnackbarComponent>:""}
+                {!isLoadingDepartmentSubject && !isErrorDepartmentsSubject ? <SnackbarComponent vertical="top" horizontal="left" type="success"  msg="Subjects Subscribe Department Successfully !"></SnackbarComponent>:"" }
+                {!isLoadingDeleteDepartmentSubject && !isErrorDeleteDepartmentSubject ? <SnackbarComponent vertical="top" horizontal="left" type="success"  msg="Subject Un Subscribe Department Successfully !"></SnackbarComponent>:""}
             </div>
         </div>
     );
@@ -249,4 +209,4 @@ function StudentsDepartment() {
 
 
 
-export default StudentsDepartment;
+export default SubjectDepartment;

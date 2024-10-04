@@ -1,5 +1,5 @@
 "use client"
-import { useState, useMemo } from 'react';
+import { useState, useMemo,lazy ,Suspense } from 'react';
 import { 
     useGetSubjectQuery,
     useGetSubjectsQuery,
@@ -9,9 +9,13 @@ import {
 } from '@/app/Redux/slices/Subject_Slice_ApI';
 import {Chip} from "@nextui-org/react";
 import { boolean, number, object, string } from 'yup';
-import TableModifiedComponent from "../../Components/TableData/TableModifiedComponent";
+// import TableModifiedComponent from "../../Components/TableData/TableModifiedComponent";
 import { useSelector, useDispatch } from 'react-redux'
 import {setValidationErrors,clearValidationErrors} from "../../Redux/slices/SharedSlice";
+// import TableModifiedComponent from "../../Components/TableData/TableModifiedComponent";
+import {Spinner} from "@nextui-org/react";
+
+const TableModifiedComponent = lazy(() => import('../../Components/TableData/TableModifiedComponent'));
 function SubjectTable() {
     
     const dispatch = useDispatch();
@@ -142,7 +146,6 @@ function SubjectTable() {
             dispatch(clearValidationErrors());
             table.setCreatingRow(null);
         }catch (validationErrors) {
-            console.log(validationErrors);
             const formattedErrors = validationErrors.inner.reduce((acc, error) => {
               acc[error.path] = error.message;
               return acc;
@@ -203,7 +206,9 @@ function SubjectTable() {
     }
     return (  
         <div>
-            <TableModifiedComponent information={information}></TableModifiedComponent>
+            <Suspense fallback={<Spinner color="default" size="lg" />}>
+                <TableModifiedComponent information={information}></TableModifiedComponent>
+            </Suspense>
         </div>
     );
 }
