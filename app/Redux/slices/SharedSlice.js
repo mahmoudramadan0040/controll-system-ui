@@ -28,9 +28,13 @@ const sharedSlice = createSlice({
             state.gradeSteps=action.payload;
         },
         setSelectedStudents:(state,action)=>{
+            console.log(action.payload)
+            console.log(action)
             state.selectedStudents=action.payload;
         },
         setSelectedSubject:(state,action)=>{
+            console.log(action.payload)
+            console.log(action)
             state.selectedSubject=action.payload;
         },
     }

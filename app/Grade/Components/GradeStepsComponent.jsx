@@ -12,13 +12,13 @@ const steps = [
 function GradeSteps(props) {
     const StepState = useSelector((state)=> state.shared.gradeSteps);
     return ( 
-        <div className='flex justify-center mt-6 '>
-            <Box className=' bg-neutral-700 p-6 rounded-lg' sx={{ width: '80%' }}>
+        <div className='flex justify-center mt-3 '>
+            <Box className=' bg-neutral-700 pt-3 rounded-lg' sx={{ width: '80%' }}>
                 <Stepper activeStep={StepState} alternativeLabel>
                     {steps.map((label) => (
                     <Step key={label}>
                         <StepLabel>
-                            <span className=' text-xl text-slate-200 font-semibold'>
+                            <span className='text-slate-200 font-semibold'>
                                 {label}
                             </span>
                         </StepLabel>

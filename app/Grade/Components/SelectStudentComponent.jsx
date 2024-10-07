@@ -134,7 +134,7 @@ function SelectStudent() {
         setSelectStudentErr(false);
         setSelectDepartmentErr(false);
      
-        console.log(table.getSelectedRowModel().flatRows);
+
         // const selectedRows = table.getSelectedRowModel().flatRows;
         if(!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()){
             setSelectStudentErr(true);
@@ -145,9 +145,8 @@ function SelectStudent() {
             setSelectDepartmentErr(true);
             return;
         } 
-        const SelectedStudents = table.getSelectedRowModel().flatRows;
-        console.log(SelectedStudents)
-        dispatch(setSelectedStudents(SelectedStudents.original));
+        const SelectedStudents = table.getSelectedRowModel().flatRows.map((st)=>(st.original)) ;
+        dispatch(setSelectedStudents(SelectedStudents));
         dispatch(ChangeGradeSteps(1));      
     }
 

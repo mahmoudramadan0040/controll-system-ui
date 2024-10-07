@@ -8,6 +8,7 @@ import { useSelector, useDispatch } from 'react-redux'
 const EditGradeStudents = lazy(() => import('./Components/EditgradeStudentComponent'));
 const SelectStudent = lazy(() => import('./Components/SelectStudentComponent'));
 const SelectSubject = lazy(()=>import('./Components/SelectSubjectComponent'));
+
 function Grade() {
 
     const StepState = useSelector((state)=> state.shared.gradeSteps);
@@ -16,7 +17,10 @@ function Grade() {
 
     return (
         <div>
-            <GradeSteps></GradeSteps>
+            {   
+                StepState != 2 ? 
+                <GradeSteps></GradeSteps>:''
+            }
             {
              
                 StepState == 0 ?  
@@ -32,6 +36,8 @@ function Grade() {
                         <EditGradeStudents></EditGradeStudents>  
                 </Suspense> : ''
             }
+            
+            {/* <EditGradeStudents></EditGradeStudents>  */}
             
         </div>
     );
