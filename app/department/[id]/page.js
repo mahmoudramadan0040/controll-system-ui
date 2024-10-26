@@ -16,7 +16,7 @@ function DepartmentDetails() {
             <br></br>
             <Accordion variant="splitted">
             <AccordionItem key="1" aria-label="Subject Table" title="Subject Table">
-                 <ShowSubjectInDepartment id={params.id}/>
+                <ShowSubjectInDepartment id={params.id}/>
             </AccordionItem>
             </Accordion>
         </div>

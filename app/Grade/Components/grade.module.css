@@ -1,0 +1,30 @@
+.clearBtn {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: none;
+    border-radius: 2px;
+    padding:2px;
+    margin: 3px;
+    cursor: pointer;
+}
+
+.sendBtn {
+    background-color: #d4edda;
+    color: #155724;
+    border: none;
+    border-radius: 2px;
+    margin: 3px;
+    padding:2px;
+    cursor: pointer;
+}
+
+.editBtn {
+    background-color: #cce5ff;
+    color: #004085;
+    border: none;
+    border-radius: 2px;
+    margin: 3px;
+    padding:2px;
+    cursor: pointer;
+}
+
