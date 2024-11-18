@@ -4,15 +4,16 @@
 import 'tabulator-tables/dist/css/tabulator.min.css'; // Import Tabulator styles
 import { ReactTabulator } from 'react-tabulator'
 import { useSelector } from 'react-redux';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheckCircle} from '@fortawesome/free-solid-svg-icons';
-
-import { faEdit, faTrash, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-
+import {GRADE} from "./Grade_Tags";
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import { config } from '@fortawesome/fontawesome-svg-core';
 import {useState,useRef,useEffect,useMemo} from "react";
-import {useAddGradeStudentMutation,useGetStudentGradeInSubjectQuery,useDeleteStudentGradeMutation} from "../../Redux/slices/Grade_Slice_API";
+import {
+    useAddGradeStudentMutation,
+    useGetStudentGradeInSubjectQuery,
+    useDeleteStudentGradeMutation,
+    useGetGradesInSubjectQuery
+} from "../../Redux/slices/Grade_Slice_API";
 import GradeTableFilter from "./GradeTableFilterComponent";
 // import ActionTableGrade from './ActionTableGradeComponent';
 import styles from './grade.module.css';
@@ -21,57 +22,137 @@ import React, { useCallback } from 'react';
 import {Button} from "@mui/material"
 config.autoAddCss = false;
 function EditGradeStudent() {
+
+   
     // get the information from store
     const students = useSelector((state)=> state.shared.selectedStudents);
     const subject = useSelector((state)=> state.shared.selectedSubject);
-    const [addGradeStudent,{isLoading:isLoadingAddGradeStudent,status,isFetching,isError:isErrorAddGradeStudent}] = useAddGradeStudentMutation();
-    const [removeGradeStuent,{isLoading:isLoadingRemoveGradeStudent,isError:isErrorRemoveGradeStudent}]=useDeleteStudentGradeMutation();
+
+
+
+
+
+    console.log(subject.id);
+    console.log(subject);
+    // const [
+        //     getStudentGradeInSubject,
+        //     {
+        //         data:prvGrade,
+        //         isLoading: isLoadingGradeStudentInSubject,
+        //         isFetching: isFetchingGradeStudentInSubject,
+        //         isError:isErrorGradesStudentInSubject
+        //     },
+        // ] = useGetStudentGradeInSubjectQuery(subject.id,student.student_id);
+    const {
+        data:prevGrades=[],
+        isLoading:isLoadingGradesInSubject,
+        isFetching:isFetchingGradesInSubject,
+        isError:isErrorGradesInSubject
+    } = useGetGradesInSubjectQuery({subjectId:subject.id});
+    const [
+      addGradeStudent,
+      {
+        isLoading: isLoadingAddGradeStudent,
+        status,
+        isFetching,
+        isError: isErrorAddGradeStudent,
+      },
+    ] = useAddGradeStudentMutation();
+    const [
+      removeGradeStuent,
+      {
+        isLoading: isLoadingRemoveGradeStudent,
+        isError: isErrorRemoveGradeStudent,
+      },
+    ] = useDeleteStudentGradeMutation();
+    
+    console.log(prevGrades);
+    
+    
+    
     const tableRef = useRef(null);
-    const studentInformation = students.map(student => {
-        return {
-            student_id:student.student_id,
-            student_setId:student.student_setId,
-            fullname:student.fullname
-        }
-    }) 
-    const studentInformationWithSubjectInfo=studentInformation.map(student=>{
-        return {...student,semesterScore:'',finalExamScore:'',totalScore:'',grade:'',subjectId:subject.id}
-    })
-    const data = useMemo(() => studentInformationWithSubjectInfo.map(studentInformationWithSubjectInfo => ({ ...studentInformationWithSubjectInfo })), [studentInformationWithSubjectInfo.length]);
+    
+    const data = useMemo(
+        () => {
+            const studentInformation = students.map(student => {
+                return {
+                    student_id:student.student_id,
+                    student_setId:student.student_setId,
+                    fullname:student.fullname,
+                    id:student.id
+                }
+            }) 
 
+            const gradeMap = prevGrades.reduce((acc, grade) => {
+                acc[grade.studentId] = grade; // Map studentId to their grade
+                return acc;
+              }, {});
+            return studentInformation.map((student) => {
+                const prevGrade = gradeMap[student.id] || {}; // Get the grade for the student
+                return {
+                ...student,
+                semesterScore: prevGrade.semesterScore || "",
+                finalExamScore: prevGrade.finalExamScore || "",
+                totalScore: prevGrade.totalScore || "",
+                grade: prevGrade.grade || "",
+                subjectId: subject.id,
+                };
+            });
+        
 
+        },[students,prevGrades,subject.id]);
+            
     const HandelInputCell=(cell)=>{
         const row = cell.getRow();
         const data = row.getData();
-        
-        if(parseFloat(data.semesterScore || 0) + parseFloat(data.finalExamScore || 0)){
-            const totalScore = parseFloat(data.semesterScore || 0) + parseFloat(data.finalExamScore || 0);
+        console.log(data)
+        let totalScore=0;
+        if(parseFloat(data.semesterScore) + parseFloat(data.finalExamScore)){
+            totalScore = parseFloat(data.semesterScore || 0) + parseFloat(data.finalExamScore || 0);
             row.update({ totalScore });
 
-        }else if( 
-            data.semesterScore ==="غـ" || 
-            data.semesterScore ==="غ" || 
-            data.semesterScore ==="مؤجل" || 
-            data.finalExamScore ==="غـ" || 
-            data.finalExamScore ==="غ" || 
-            data.finalExamScore ==="مؤجل" 
-        ){
-            const totalScore= data.finalExamScore;
+        }else if (
+            data.semesterScore == GRADE.Absent ||
+            data.semesterScore == GRADE.Execuse ||
+            data.finalExamScore == GRADE.Absent ||
+            data.finalExamScore == GRADE.Execuse
+        ) {
+            totalScore = data.finalExamScore;
             row.update({ totalScore });
+        } else if (parseFloat(data.semesterScore) + parseFloat(data.finalExamScore) ==0) {
+            totalScore = 0;
+            row.update({ totalScore });
+            let grade = {
+                semesterScore:parseFloat(data.semesterScore),
+                finalExamScore:parseFloat(data.finalExamScore),
+                totalScore:parseFloat(totalScore),
+                studentId:data.id,
+                subjectId:data.subjectId
+            }
 
+            console.log(grade)
+            addGradeStudent(grade,data.subjectId)
+            // row.update()
+
+        } else {
+            totalScore = "";
+            row.update({ totalScore });
         }
         
+
+
+
 
     }
     const formatCellStatus =(cell, formatterParams) =>{
         const value = cell.getValue();
         // Apply conditional styles
-        if (value === "غـ" || value==="غ") {
+        if (value===GRADE.Absent) {
         cell.getElement().style.backgroundColor = "#f8d7da";  // Light red background
         cell.getElement().style.color = "#721c24";  // Dark red text
         cell.getElement().style.fontWeight = "bold";  // Bold text
         
-        } else if (value === "مؤجل") {
+        } else if (value ===GRADE.Execuse) {
         cell.getElement().style.backgroundColor = "#fff3cd";  // Light yellow background
         cell.getElement().style.color = "#856404";  // Dark yellow text
         cell.getElement().style.fontWeight = "bold";  // Bold text
@@ -137,7 +218,7 @@ function EditGradeStudent() {
                         cellEdited:HandelInputCell,
                         ...SharedProperty,
                         editorParams: {
-                            values: ["غـ", "مؤجل"], // Keywords suggestions
+                            values: [GRADE.Absent, GRADE.Execuse], // Keywords suggestions
                             allowEmpty: true,             // Allow empty value
                             showListOnEmpty: true,        // Show suggestions when the field is empty
                             freetext: true                // Allow user to enter values not in the list
@@ -157,12 +238,12 @@ function EditGradeStudent() {
                     columns:[{ 
                         title: '45',
                         field: 'finalExamScore',
-                        editor: 'autocomplete',
+                        editor: 'input',
                         ...SharedProperty,
                         cellEdited:HandelInputCell,
                         
                         editorParams: {
-                            values: ["غـ", "مؤجل"], // Keywords suggestions
+                            values: [GRADE.Absent, GRADE.Execuse], // Keywords suggestions
                             allowEmpty: true,             // Allow empty value
                             showListOnEmpty: true,        // Show suggestions when the field is empty
                             freetext: true                // Allow user to enter values not in the list
@@ -182,12 +263,12 @@ function EditGradeStudent() {
                     columns: [{
                         title: '150',
                         field: 'totalScore',
-                        editor: 'input',
+                        // editor: 'input',
                         ...SharedProperty,
                         formatter: formatCellStatus,
                     },],
                     ...SharedProperty,
-                    editor: 'input',
+                    // editor: 'input',
                     
                 }, // Make Name column non-editab
                 
@@ -212,6 +293,7 @@ function EditGradeStudent() {
             title: 'Actions', 
             field: 'actions', 
             hozAlign: 'center', 
+            vertAlign:'middel',
             width: 150,
             formatter: (cell)=>{
                 const buttonContainer = document.createElement('div');
@@ -275,18 +357,14 @@ function EditGradeStudent() {
 
     return ( 
         <>
-            <GradeTableFilter></GradeTableFilter>
+            {/* <GradeTableFilter></GradeTableFilter> */}
             <div className='mt-6 flex flex-wrap justify-center'>
             
                 <h2 className='w-11/12  mb-6'>Monitor { subject ? subject.name : ''} Grades </h2>
                 <ReactTabulator className="w-11/12 "
                 data={data}
                 columns={columns}
-                // events={{
-                //     cellEdited: handelCellEdit
-                // }} 
                 movableRows={true}
-
                 layout={"fitColumns"}
                 />
 
