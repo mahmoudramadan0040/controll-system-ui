@@ -1,6 +1,0 @@
--- get the student data [done]
--- get the student grade if exists 
--- filter the students grade 
--- show statistics about number of student have grade 
--- colored the table of each grade 
--- 

@@ -25,13 +25,13 @@ export const apiGradeSlice = createApi({
     }),
 
     addGradeStudent: builder.mutation({
-      query: (grade,subjectId) => {
+      query: ({grade,subjectId}) => {
         console.log("Subject ID:", subjectId);
         console.log("Grade:", grade);
         return {
           url: `/grades/${subjectId}`,
           method: "PUT",
-          body: { ...grade },
+          body: [grade],
         };  
       }
     //     {

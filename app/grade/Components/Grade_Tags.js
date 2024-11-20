@@ -8,4 +8,10 @@ export const GRADE = {
     Execuse:'مؤجل',
     Cheate:'غش',
     Absent:'غ',
+
+
+    // some status 
+    FailedAction:'fail',
+    AcceptAction:'done',
+    
 };
