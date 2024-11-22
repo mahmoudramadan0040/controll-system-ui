@@ -26,6 +26,8 @@
     "ag-grid-community": "^32.0.1",
     "ag-grid-react": "^32.0.1",
     "dotenv": "^16.4.5",
+    "exceljs": "^4.4.0",
+    "file-saver": "^2.0.5",
     "framer-motion": "^11.2.10",
     "generate-react-cli": "^8.4.6",
     "i": "^0.3.7",
