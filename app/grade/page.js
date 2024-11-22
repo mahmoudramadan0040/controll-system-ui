@@ -15,8 +15,6 @@ function Grade() {
 
     const StepState = useSelector((state)=> state.shared.gradeSteps);
 
- 
-
     return (
         <div>
             {   

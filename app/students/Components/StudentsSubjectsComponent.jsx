@@ -12,11 +12,20 @@ import { useGetDepartmentsQuery } from '@/app/Redux/slices/Department_Slice_API'
 import TableIcons from "../../Components/TableData/TableIconsComponent";
 import {Chip} from "@nextui-org/react";
 import {Box,Button, AlertTitle} from "@mui/material"
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import CircularProgress from '@mui/material/CircularProgress';
+import Stack from '@mui/material/Stack';
+import { Suspense , lazy } from "react";
 import SnackbarComponent from '@/app/Components/SnackbarComponent';
+
+
+const loadStudentTable = lazy(({StudentTable,selectStudentErr})=>(
+    <div className='w-full h-full mr-4 ml-3'>   
+                    
+        <MaterialReactTable table={StudentTable} className="w-screen " ></MaterialReactTable>
+        {selectStudentErr ? <SnackbarComponent vertical="top" horizontal="left" type="error"  msg="Please Select Students ! "></SnackbarComponent>:""}
+               
+    </div>
+))
 function StudentsSubjects() {
 
     const [isVisible, setIsVisible] = useState(true);
@@ -309,48 +318,46 @@ function StudentsSubjects() {
    
 
     });
-
+    
     return (
         <>
-            <div style={{ width: '199vw' ,scrollbarWidth: 'none' }} className={`w-full flex nowrap transition-transform ease-in-out duration-1000 transform ${isVisible ? 'translate-x-0' :'-translate-x-1/2 ' }`} >
+            {/* <div style={{ width: '199vw' ,scrollbarWidth: 'none' }} className={`w-full flex nowrap transition-transform ease-in-out duration-1000 transform ${isVisible ? 'translate-x-0' :'-translate-x-1/2 ' }`} > */}
                 
-                <div className='w-full h-full mr-4 ml-3'>   
-                        <Accordion className='w-2/5 mb-3'>
-                            <AccordionSummary
-                            expandIcon={<ExpandMoreIcon />}
-                            aria-controls="panel1-content"
-                            id="panel1-header"
-                            >
-                            <div className='text-2xl text-black font-bold'> Please Select Student Want SubScribe </div>
-                            </AccordionSummary>
-                            <AccordionDetails>
-                                <div className='text-xl text-black font-bold'>First step : Select Student from this table Below </div>
-                                <div className='text-xl text-black font-bold' >Second step : Press Next Button</div>
-                            </AccordionDetails>
-                        </Accordion>
-                    <MaterialReactTable table={StudentTable} className="w-screen " ></MaterialReactTable>
-                    {selectStudentErr ? <SnackbarComponent vertical="top" horizontal="left" type="error"  msg="Please Select Students ! "></SnackbarComponent>:""}
-                   
-                </div>
+                {isVisible  ? 
+                    
+                    <Suspense fallback=
+                    {
+                        <div className="flex justify-center items-center h-screen mt-5 ">
+                            <Stack spacing={2} direction="row" alignItems="center" >
+                                <CircularProgress size="8rem" color="inherit"/>
+                            </Stack>
+                        </div>   
+                    }>
+                        <div className='w-full h-full mr-4 ml-3'>   
+                            <MaterialReactTable table={StudentTable} className="w-screen " ></MaterialReactTable>
+                            {selectStudentErr ? <SnackbarComponent vertical="top" horizontal="left" type="error"  msg="Please Select Students ! "></SnackbarComponent>:""}
+                        </div>
+                    </Suspense>
+                :
+                <Suspense fallback=
+                    {
+                        <div className="flex justify-center items-center h-screen mt-5 ">
+                            <Stack spacing={2} direction="row" alignItems="center" >
+                                <CircularProgress size="8rem" color="inherit"/>
+                            </Stack>
+                        </div>   
+                    }>
+                    <div className='w-full h-full ml-3'>   
+                        
+                        <MaterialReactTable table={SubjectTable}  className="w-screen" ></MaterialReactTable>
+                        {!isLoadingStudentEnrollSubjects && !isErrorStudentEnrollSubjects && studentsSelected.length>0 && subjectsSelected.length>0 ? <SnackbarComponent vertical="top" horizontal="left" type="success"  msg="Students Subscribe Subjects Successfully !"></SnackbarComponent>:"" }
+                    </div>
+                </Suspense>
+                }
                 
-                <div className='w-full h-full ml-3'>   
-                    <Accordion className='w-2/5 mb-3'>
-                            <AccordionSummary
-                            expandIcon={<ExpandMoreIcon />}
-                            aria-controls="panel1-content"
-                            id="panel1-header"
-                            >
-                            <div className='text-2xl text-black font-bold'> Please Select Subject Want SubScribe </div>
-                            </AccordionSummary>
-                            <AccordionDetails>
-                                <div className='text-xl text-black font-bold'>First step : Select Subject from this table Below ! </div>
-                                <div className='text-xl text-black font-bold' >Second step : Press Next Button</div>
-                            </AccordionDetails>
-                        </Accordion>
-                    <MaterialReactTable table={SubjectTable}  className="w-screen" ></MaterialReactTable>
-                    {!isLoadingStudentEnrollSubjects && !isErrorStudentEnrollSubjects && studentsSelected.length>0 && subjectsSelected.length>0 ? <SnackbarComponent vertical="top" horizontal="left" type="success"  msg="Students Subscribe Subjects Successfully !"></SnackbarComponent>:"" }
-                </div>
-            </div>
+                
+                
+            {/* </div> */}
         
         
         
@@ -358,5 +365,6 @@ function StudentsSubjects() {
         
     );
 }
+
 
 export default StudentsSubjects;
