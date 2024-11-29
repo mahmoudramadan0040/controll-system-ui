@@ -1,6 +1,26 @@
+"use client"
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
+import { useGetNategaReportQuery } from "@/app/Redux/slices/Report_Slice_API";
+import { useGetSubjectsReportQuery } from "@/app/Redux/slices/Report_Slice_API";
+
 function CustomNategaReport() {
+
+    
+    const {
+        data:ReportData=[],
+        isLoading:isLoadingNategaReport,
+        isFetching:isFetchingNategaReport,
+        isError:isErrorNategaReport,
+    } = useGetNategaReportQuery({departmentId:"fd090974-ac59-40d2-6d2d-08dd096ffd1d",studentStatus:"First"});
+    console.log(ReportData)
+
+
+
+
+
+
+
 
     const generateReport = async ()=>{
         const workbook = new ExcelJS.Workbook();
@@ -26,7 +46,9 @@ function CustomNategaReport() {
 
 
     return ( 
-        <></>
+        <>
+            <button onClick={generateReport}>Download Custom Report</button>
+        </>
      );
 }
 

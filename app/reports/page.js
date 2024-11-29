@@ -1,6 +1,14 @@
+import CustomNategaReport from "./components/CustomNategaReportComponent";
+
+
 function Report() {
+
+    
+   
     return ( 
-        <div></div>
+        <div>
+            <CustomNategaReport></CustomNategaReport>
+        </div>
      );
 }
 
