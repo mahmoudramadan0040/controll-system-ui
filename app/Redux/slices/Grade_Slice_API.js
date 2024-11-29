@@ -15,11 +15,8 @@ export const apiGradeSlice = createApi({
         `/grades/grade/student/${studentId}/subject/${subjectId}`,
     }),
     getGradesInSubject: builder.query({
-      query: ({subjectId,filter={}}) =>{
-        const queryString = Object.keys(filter).length 
-        ? `?${new URLSearchParams(filter).toString()}` 
-        : "";
-        return `/grades/subject/${subjectId}${queryString}`;
+      query: ({subjectId}) =>{
+        return `/grades/subject/${subjectId}`;
       }
         
     }),

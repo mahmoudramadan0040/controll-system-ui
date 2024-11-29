@@ -16,6 +16,7 @@ import {
 } from "../../Redux/slices/Grade_Slice_API";
 import GradeTableFilter from "./GradeTableFilterComponent";
 // import ActionTableGrade from './ActionTableGradeComponent';
+import { stringify, parse } from 'flatted';
 import styles from './grade.module.css';
 
 
@@ -31,7 +32,7 @@ function EditGradeStudent() {
         data:prevGrades=[],
         isLoading:isLoadingGradesInSubject,
         isFetching:isFetchingGradesInSubject,
-        isError:isErrorGradesInSubject
+        isError:isErrorGradesInSubject,
     } = useGetGradesInSubjectQuery({subjectId:subject.id});
     const [
       addGradeStudent,
@@ -50,7 +51,7 @@ function EditGradeStudent() {
       },
     ] = useDeleteStudentGradeMutation();
     
-    
+    console.log(prevGrades);
    
     
     const data = useMemo(
@@ -63,32 +64,36 @@ function EditGradeStudent() {
                     id:student.id
                 }
             }) 
+            
             console.log(prevGrades);
-            const gradeMap = prevGrades.reduce((acc, grade) => {
+            
+            const gradeMap = prevGrades.length ? prevGrades.reduce((acc, grade) => {
                 acc[grade.studentId] = grade; // Map studentId to their grade
                 return acc;
-              }, {});
+              }, {}):[];
+            
+            
             return studentInformation.map((student) => {
                 const prevGrade = gradeMap[student.id] || {}; 
                 
                 // Get the grade for the student
-                return prevGrade ? 
-                {
-                ...student,
-                semesterScore: prevGrade.semesterScore ,
-                finalExamScore: prevGrade.finalExamScore ,
-                totalScore: prevGrade.totalScore ,
-                grade: prevGrade.grade ,
-                subjectId: subject.id,
-                }:
-                {
+                return prevGrade ? parse(stringify({
+                    ...student,
+                    semesterScore: prevGrade.semesterScore ,
+                    finalExamScore: prevGrade.finalExamScore ,
+                    totalScore: prevGrade.totalScore ,
+                    grade: prevGrade.grade ,
+                    subjectId: subject.id,
+                    }))
+                :
+                parse(stringify({
                     ...student,
                     semesterScore: prevGrade.semesterScore || "",
                     finalExamScore: prevGrade.finalExamScore || "",
                     totalScore: prevGrade.totalScore || "",
                     grade: prevGrade.grade || "",
                     subjectId: subject.id,
-                }
+                }))
             });
         
 

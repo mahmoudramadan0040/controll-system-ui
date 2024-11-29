@@ -28,6 +28,7 @@
     "dotenv": "^16.4.5",
     "exceljs": "^4.4.0",
     "file-saver": "^2.0.5",
+    "flatted": "^3.3.2",
     "framer-motion": "^11.2.10",
     "generate-react-cli": "^8.4.6",
     "i": "^0.3.7",
