@@ -18,15 +18,15 @@ const baseStyle = {
   };
   
   const focusedStyle = {
-    borderColor: '#2196f3'
+    borderColor: '#2196f3',
   };
   
   const acceptStyle = {
-    borderColor: '#00e676'
+    borderColor: '#00e676',
   };
   
   const rejectStyle = {
-    borderColor: '#ff1744'
+    borderColor: '#ff1744',
   };
   
 function ImportStudents(props) {
@@ -53,7 +53,7 @@ function ImportStudents(props) {
         <div className='mt-8 m-5'>
           <div {...getRootProps({style})}>
             <input {...getInputProps()} />
-            <p>Drag 'n' drop some files here, or click to select files</p>
+            <p>Drag n drop some files here, or click to select files</p>
           </div>
         </div>
       );

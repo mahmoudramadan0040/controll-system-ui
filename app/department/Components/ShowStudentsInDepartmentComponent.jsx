@@ -17,12 +17,13 @@ function ShowStudentsInDepartment(props) {
               result.data.map((
                 { 
                 student_id,
+                student_setId,
                 fullname,
                 studentStatus,
                 graduated,
                 studentContraint ,
                 createdDate
-                }) => ({ student_id,fullname,studentStatus,graduated,studentContraint ,createdDate})) : []
+                }) => ({ student_id,fullname,studentStatus,graduated,studentContraint ,createdDate,student_setId})) : []
               return result;
             },
           }
@@ -72,7 +73,7 @@ function ShowStudentsInDepartment(props) {
         columns:TableCoulmns,
         data:TableData,
         icons:TableIcons(),
-        enableRowSelection: true,
+        // enableRowSelection: true,
         muiToolbarAlertBannerProps: isLoading
         ? {color: 'error',children: 'Error loading data',}: undefined,
         muiTableContainerProps: {sx: { minHeight: '500px',backgroundColor:"#2F2F2F",color:"#fff",},},

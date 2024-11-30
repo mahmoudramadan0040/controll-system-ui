@@ -9,7 +9,7 @@ import { useGetDepartmentSubjectsQuery } from "@/app/Redux/slices/Department_Sli
 function ShowSubjectInDepartment(props) {
 
     const {data:SubjectData,isLoading,isFetching,isError} = useGetDepartmentSubjectsQuery(
-        props.id, {
+        props.departmentId, {
             selectFromResult: (result) => {
                 result.data = result.currentData ? result.data.map(({ id, name, subject_Code,creditHours,isGeneralSubject,maxScore,maxSemesterScore }) => ({ id, name, subject_Code,creditHours,isGeneralSubject,maxScore,maxSemesterScore })) : []
                 return result;
@@ -58,7 +58,6 @@ function ShowSubjectInDepartment(props) {
         columns:TableCoulmns,
         data:SubjectData,
         icons:TableIcons(),
-        enableRowSelection: true,
         muiToolbarAlertBannerProps: isLoading
         ? {color: 'error',children: 'Error loading data',}: undefined,
         muiTableContainerProps: {sx: { minHeight: '500px',backgroundColor:"#2F2F2F",color:"#fff",},},
@@ -83,7 +82,7 @@ function ShowSubjectInDepartment(props) {
         });
     return (
         <div>
-            <MaterialReactTable table={table}></MaterialReactTable>
+            <MaterialReactTable table={table} ></MaterialReactTable>
         </div>
     );
 }

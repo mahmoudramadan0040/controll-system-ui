@@ -5,6 +5,7 @@ const initialState={
     DeleteDepartmentModel:false,
     validationErrors:{},
     gradeSteps:0,
+    ReportSteps:0,
     selectedStudents:[],
     selectedSubject:{}
 };
@@ -27,6 +28,9 @@ const sharedSlice = createSlice({
         ChangeGradeSteps:(state,action)=>{
             state.gradeSteps=action.payload;
         },
+        ChangeReportSteps:(state,action)=>{
+            state.ReportSteps=action.payload;
+        },
         setSelectedStudents:(state,action)=>{
             console.log(action.payload)
             console.log(action)
@@ -45,6 +49,7 @@ export const {
     setValidationErrors,
     clearValidationErrors,
     ChangeGradeSteps,
+    ChangeReportSteps,
     setSelectedStudents,
     setSelectedSubject
 } = sharedSlice.actions

@@ -12,8 +12,8 @@ import {Select, SelectItem,Chip} from "@nextui-org/react";
 import {Box,Button} from "@mui/material"
 import { useGetDepartmentsQuery,useGetDepartmentStudentsQuery } from '@/app/Redux/slices/Department_Slice_API';
 import { useDispatch } from 'react-redux'
-import {setSelectedStudents,ChangeGradeSteps} from "../../Redux/slices/SharedSlice";
-function SelectStudent() {
+import {setSelectedStudents,ChangeGradeSteps,ChangeReportSteps} from "../../Redux/slices/SharedSlice";
+function SelectStudent({IsReport}) {
     const dispatch = useDispatch();
     const [selectedDepartment,setDepartment]=useState(null);
     const [selectDepartmentErr , setSelectDepartmentErr] = useState(false);
@@ -147,7 +147,7 @@ function SelectStudent() {
         } 
         const SelectedStudents = table.getSelectedRowModel().flatRows.map((st)=>(st.original)) ;
         dispatch(setSelectedStudents(SelectedStudents));
-        dispatch(ChangeGradeSteps(1));      
+        IsReport ? dispatch(ChangeReportSteps(1)):dispatch(ChangeGradeSteps(1));      
     }
 
     

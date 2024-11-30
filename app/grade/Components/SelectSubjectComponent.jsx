@@ -12,9 +12,9 @@ import {Select, SelectItem,Chip} from "@nextui-org/react";
 import {Box,Button} from "@mui/material"
 import { useGetDepartmentsQuery,useGetDepartmentSubjectsQuery } from '@/app/Redux/slices/Department_Slice_API';
 import { useDispatch } from 'react-redux'
-import {setSelectedSubject,ChangeGradeSteps} from "../../Redux/slices/SharedSlice";
+import {setSelectedSubject,ChangeGradeSteps,ChangeReportSteps} from "../../Redux/slices/SharedSlice";
 
-function SelectSubject() {
+function SelectSubject({IsReport}) {
     const dispatch = useDispatch();
     const [selectedDepartment,setDepartment]=useState(null);
     const [selectDepartmentErr , setSelectDepartmentErr] = useState(false);
@@ -104,11 +104,11 @@ function SelectSubject() {
 
         dispatch(setSelectedSubject(SelectedSubject));
     
-        dispatch(ChangeGradeSteps(2));      
+        IsReport ? dispatch(ChangeReportSteps(2)):dispatch(ChangeGradeSteps(2));      
     }
 
     const handelBack =() =>{
-        dispatch(ChangeGradeSteps(0));  
+        IsReport ? dispatch(ChangeReportSteps(0)):dispatch(ChangeGradeSteps(0));   
     }
     const table = useMaterialReactTable({
         columns:TableCoulmns,
