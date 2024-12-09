@@ -22,7 +22,7 @@ import { config } from '@fortawesome/fontawesome-svg-core';
 config.autoAddCss = false;
 
 function TableIcons() {
-    const IconsColor = "text-emerald-200"
+    const IconsColor = "text-slate-100"
     const fontAwesomeIcons= {
         ArrowDownwardIcon: (props) => (
           <FontAwesomeIcon icon={faSortDown} {...props} />

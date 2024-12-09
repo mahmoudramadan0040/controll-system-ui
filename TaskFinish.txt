@@ -1,8 +1,8 @@
 Department: 
-user can Add Department 
-user can show all Department 
-user can delete Department 
-user can update Department 
+user can Add Department  [done]
+user can show all Department [done]
+user can delete Department  [done]
+user can update Department  [done]
 
 
 Subject: 
@@ -10,9 +10,9 @@ user can show all Subject     [done]
 user can add subject          [done]
 user can delete Subject       [done]
 user can update Subject       [done]
-search for students and select it [working]
-add students to subject       [working] [ first select subjects and students then add student to subject ]
-student can enroll to subject 
+search for students and select it [done]
+add students to subject       [done]
+student can enroll to subject [done]
 
 
 Student:

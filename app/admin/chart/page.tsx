@@ -1,6 +1,6 @@
-import Chart from "../admin/components/Charts/page";
+import Chart from "../../admin/components/Charts/page";
 import { Metadata } from "next";
-import AdminLayout from "../admin/layout";
+import AdminLayout from "../../admin/components/Layouts/DefaultLayout"
 import React from "react";
 
 export const metadata: Metadata = {

@@ -57,6 +57,11 @@ export default function NavigationBarComponent() {
             Manage Grades
           </Link>
         </NavbarItem>
+        <NavbarItem>
+          <Link color="foreground" href="/admin">
+            Admin
+          </Link>
+        </NavbarItem>
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem className="hidden lg:flex">
