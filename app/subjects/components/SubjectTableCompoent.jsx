@@ -16,7 +16,7 @@ import {setValidationErrors,clearValidationErrors} from "../../Redux/slices/Shar
 import {Spinner} from "@nextui-org/react";
 
 const TableModifiedComponent = lazy(() => import('../../Components/TableData/TableModifiedComponent'));
-function SubjectTable() {
+function SubjectTable(props) {
     
     const dispatch = useDispatch();
     const validationErrors = useSelector((state)=> state.shared.validationErrors);

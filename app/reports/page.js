@@ -29,7 +29,7 @@ function Report() {
                     </div>   
                     
                     }>
-                        <SelectStudent IsReport={true}></SelectStudent>  
+                        <SelectStudent IsReport={true} selectMultiple={true}></SelectStudent>  
                     </Suspense>
                 : StepState == 1 ? 
                     <Suspense fallback={

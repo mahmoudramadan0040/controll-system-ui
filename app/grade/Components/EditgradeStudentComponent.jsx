@@ -23,7 +23,7 @@ import styles from './grade.module.css';
 config.autoAddCss = false;
 function EditGradeStudent() {
 
-    
+   
     // get the information from store
     const students = useSelector((state)=> state.shared.selectedStudents);
     const subject = useSelector((state)=> state.shared.selectedSubject);
@@ -97,7 +97,7 @@ function EditGradeStudent() {
             });
         
 
-        },[students,subject.id,prevGrades.length]);
+        },[students.length,subject.id,prevGrades.length]);
             
     const HandelInputCell=async (cell)=>{
         const row = cell.getRow();
@@ -476,17 +476,10 @@ function EditGradeStudent() {
     
     const options = {
         responsiveLayout:"collapse",
-        maxHeight:"80vh"
-        // layout:"fitDataFill",
-        // eight: 3,
-        // movableRows: true,
-        // progressiveLoad: 'scroll',
-        // progressiveLoadDelay: 200,
-        // progressiveLoadScrollMargin: 30,
-        // paginationSize:6
+        // maxHeight:"80vh",
+        virtualDom: true, // Enable Virtual DOM
+        height: "80vh", 
     }
-
-
 
     return ( 
         <>
@@ -494,14 +487,18 @@ function EditGradeStudent() {
             <div className='mt-6 flex flex-wrap justify-center'>
             
                 <h2 className='w-11/12  mb-6'>Monitor { subject ? subject.name : ''} Grades </h2>
-                <ReactTabulator className="w-11/12 "
+
+
+                { data.length ? <ReactTabulator className="w-11/12 "
                 data={data}
                 options={options}
                 // maxHeight={"60vh"}
+
                 columns={columns}
                 movableRows={true}
+                
                 layout={"fitColumns"}
-                />
+                />:''}
 
             </div>
         </>

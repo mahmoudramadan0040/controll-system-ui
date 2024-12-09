@@ -6,7 +6,7 @@ import {
   
 } from 'material-react-table';
 import TableIcons from "../../Components/TableData/TableIconsComponent";
-import {useMemo,useState} from "react";
+import {useMemo,useState,useEffect} from "react";
 import SnackbarComponent from '@/app/Components/SnackbarComponent';
 import {Select, SelectItem,Chip} from "@nextui-org/react";
 import {Box,Button} from "@mui/material"
@@ -14,7 +14,7 @@ import { useGetDepartmentsQuery,useGetDepartmentSubjectsQuery } from '@/app/Redu
 import { useDispatch } from 'react-redux'
 import {setSelectedSubject,ChangeGradeSteps,ChangeReportSteps} from "../../Redux/slices/SharedSlice";
 
-function SelectSubject({IsReport}) {
+function SelectSubject({IsReport,selectMultiple}) {
     const dispatch = useDispatch();
     const [selectedDepartment,setDepartment]=useState(null);
     const [selectDepartmentErr , setSelectDepartmentErr] = useState(false);
@@ -41,6 +41,7 @@ function SelectSubject({IsReport}) {
 
 
     
+
     
     const TableData= useMemo(()=>subjects,[subjects.length,isfetchingSubjects]);
 
@@ -116,7 +117,7 @@ function SelectSubject({IsReport}) {
         icons:TableIcons(),
         enableEditing: false,
         enableRowSelection: true,
-        enableMultiRowSelection:false,
+        enableMultiRowSelection:selectMultiple,
         muiToolbarAlertBannerProps: isloadingSubjects
         ? {color: 'error',children: 'Error loading data',}: undefined,
         muiTableContainerProps: {sx: { minHeight: '500px',backgroundColor:"#2F2F2F",color:"#fff",},},

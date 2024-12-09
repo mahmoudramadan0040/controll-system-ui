@@ -2,19 +2,26 @@
 import EditGradeStudent from "./Components/EditgradeStudentComponent";
 // import SelectStudent from "./Components/SelectStudentComponent";
 import GradeSteps from "./Components/GradeStepsComponent";
-import { Suspense , lazy } from "react";
+import { Suspense , lazy,useEffect } from "react";
 import {Spinner} from "@nextui-org/react";
 import CircularProgress from '@mui/material/CircularProgress';
 import Stack from '@mui/material/Stack';
 import { useSelector, useDispatch } from 'react-redux'
+import {setSelectedSubject} from "../Redux/slices/SharedSlice";
 const EditGradeStudents = lazy(() => import('./Components/EditgradeStudentComponent'));
 const SelectStudent = lazy(() => import('./Components/SelectStudentComponent'));
 const SelectSubject = lazy(()=>import('./Components/SelectSubjectComponent'));
 
 function Grade() {
-
+    const dispatch = useDispatch();
     const StepState = useSelector((state)=> state.shared.gradeSteps);
-
+    // when component destroyed 
+    useEffect(()=>{
+        return () =>{
+            // remove selected student
+            dispatch(setSelectedSubject(null));
+        }
+    },[]) 
     return (
         <div>
             {   
@@ -43,7 +50,7 @@ function Grade() {
                         </Stack>
                     </div> 
                     }>
-                        <SelectSubject></SelectSubject>  
+                        <SelectSubject selectMultiple={false}></SelectSubject>  
                     </Suspense>
                 : StepState == 2 ? 
                 <Suspense fallback={
